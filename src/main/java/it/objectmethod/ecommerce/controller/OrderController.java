@@ -22,7 +22,7 @@ import it.objectmethod.ecommerce.repository.OrderRepository;
 import it.objectmethod.ecommerce.repository.OrderRowRepository;
 
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class OrderController {
 	@Autowired
 	private CartRepository cartRepo;

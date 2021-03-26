@@ -38,6 +38,7 @@ public class CartController {
 		ResponseEntity<Cart> response = null;
 		User user = userRepo.findById(userId).get();
 		Optional<Item> it = itemRepo.findById(itemId);
+		boolean newItem = true;
 
 		// vedere se esiste il prodotto
 		if (it.isPresent()) {
@@ -55,43 +56,37 @@ public class CartController {
 					cart = new Cart();
 					cart.setUser(user);
 					cart.setCartList(new ArrayList<CartDetail>());
-				}
 
-				CartDetail detail = new CartDetail();
-				detail.setItem(item);
-
-				// se il carrello non è nuovo
-				if (cart.getCartList().size() > 0) {
-					// ciclo la lista per vedere se l'item c'è già
-					for (int i = 0; i < cart.getCartList().size(); i++) {
-
-						if (item == cart.getCartList().get(i).getItem()) {
-							cart.getCartList().get(i).setQuantity(quantity + cart.getCartList().get(i).getQuantity());
-
-						} else { // se l'item non è presente
-
-							detail.setQuantity(quantity);
-							List<CartDetail> list = cart.getCartList();
-							list.add(detail);
-							cart.setCartList(list);
-						}
-
-						item.setAvailability(item.getAvailability() - quantity);
-						item = itemRepo.save(item);
-						cart = cartRepo.save(cart);
-					}
-				// se il carrello è nuovo
-				} else {
-
+					CartDetail detail = new CartDetail();
+					detail.setItem(item);
 					detail.setQuantity(quantity);
-					item.setAvailability(item.getAvailability() - quantity);
-					item = itemRepo.save(item);
 					List<CartDetail> list = cart.getCartList();
-
 					list.add(detail);
 					cart.setCartList(list);
-					cart = cartRepo.save(cart);
+
+				} else {
+
+					for (int i = 0; i < cart.getCartList().size(); i++) {
+
+						if (item.getItemId() == cart.getCartList().get(i).getItem().getItemId()) {
+							cart.getCartList().get(i).setQuantity(quantity + cart.getCartList().get(i).getQuantity());
+							newItem = false;
+						}
+					}
+					if (newItem) {
+
+						CartDetail detail = new CartDetail();
+						detail.setItem(item);
+						detail.setQuantity(quantity);
+						List<CartDetail> list = cart.getCartList();
+						list.add(detail);
+						cart.setCartList(list);
+					}
 				}
+
+				item.setAvailability(item.getAvailability() - quantity);
+				item = itemRepo.save(item);
+				cart = cartRepo.save(cart);
 
 			} else {
 				response = new ResponseEntity<Cart>(HttpStatus.BAD_REQUEST);
