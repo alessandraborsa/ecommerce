@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.objectmethod.ecommerce.entity.Item;
+import it.objectmethod.ecommerce.entity.Order;
 import it.objectmethod.ecommerce.entity.Cart;
 import it.objectmethod.ecommerce.entity.CartDetail;
 import it.objectmethod.ecommerce.entity.User;
@@ -85,6 +86,9 @@ public class CartController {
 				item.setAvailability(item.getAvailability() - quantity);
 				item = itemRepo.save(item);
 				cart = cartRepo.save(cart);
+				
+				response = new ResponseEntity<Cart>(cart, HttpStatus.OK);
+			
 
 			} else {
 				response = new ResponseEntity<Cart>(HttpStatus.BAD_REQUEST);
