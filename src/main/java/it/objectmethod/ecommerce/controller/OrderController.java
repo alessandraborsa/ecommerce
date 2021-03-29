@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,14 +33,13 @@ public class OrderController {
 	@Autowired
 	private OrderRowRepository rowRepo;
 
-	@GetMapping("/neworder")
+	@PostMapping("/neworder")
 	public ResponseEntity<Order> insertOrder(@RequestParam("userId") Integer userId) throws ParseException {
 
 		ResponseEntity<Order> response = null;
 		Cart cart = cartRepo.findByUserUserId(userId);
 		Order order = new Order();
 
-		// creazione numero ordine
 		String code = "";
 		String cartId = Integer.toString(cart.getCartId());
 		if (cartId.length() == 3) {
@@ -49,7 +48,6 @@ public class OrderController {
 			code = "A00" + cartId;
 		}
 
-		// creazione data
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String date = format.format(new Date());
 

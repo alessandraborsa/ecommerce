@@ -41,18 +41,15 @@ public class CartController {
 		Optional<Item> it = itemRepo.findById(itemId);
 		boolean newItem = true;
 
-		// vedere se esiste il prodotto
 		if (it.isPresent()) {
 
 			Item item = it.get();
 
-			// se la quantità è minore o uguale alla disponibilità
 			if (quantity <= item.getAvailability()) {
 
 				Cart cart = null;
 				cart = cartRepo.findByUserUserId(userId);
 
-				// se non esiste il carrello
 				if (cart == null) {
 					cart = new Cart();
 					cart.setUser(user);
@@ -67,10 +64,10 @@ public class CartController {
 
 				} else {
 
-					for (int i = 0; i < cart.getCartList().size(); i++) {
+					for (CartDetail ele : cart.getCartList()) {
 
-						if (item.getItemId() == cart.getCartList().get(i).getItem().getItemId()) {
-							cart.getCartList().get(i).setQuantity(quantity + cart.getCartList().get(i).getQuantity());
+						if (ele.getItem().getItemId() == item.getItemId()) {
+							ele.setQuantity(quantity + ele.getQuantity());
 							newItem = false;
 						}
 					}
